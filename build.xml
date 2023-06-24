@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="angular-material-components" basedir="." default="package">
+    <property environment="env" />
+    <property name="main.dir" location="." />
+    <property name="solution.dir" location="${main.dir}" />
+    <property name="solution.datetime-picker.dir" location="${solution.dir}/projects/datetime-picker" />
+    <property name="solution.moment-adapter.dir" location="${solution.dir}/projects/moment-adapter" />
+    <property name="dist.datetime-picker.dir" location="${solution.dir}/dist/@angular-material-components/datetime-picker" />
+    <property name="dist.moment-adapter.dir" location="${solution.dir}/dist/@angular-material-components/moment-adapter" />
+
+    <condition property="mvn.exec" value="mvn.bat">
+        <os family="windows" />
+    </condition>
+    <property name="mvn.exec" value="mvn" />
+    <property name="mvn" location="${env.M2_HOME}/bin/${mvn.exec}" />
+
+    <property name="npm" value="npm" />
+    <property name="ng" value="ng" />
+
+    <target name="bump-version">
+        <fail unless="newVersion" message="Debe proporcionar versión. -DnewVersion=x.y" />
+
+        <exec executable="${npm}" dir="${solution.dir}" failonerror="true">
+            <arg value="version" />
+            <arg value="${newVersion}" />
+        </exec>
+        <exec executable="${npm}" dir="${solution.datetime-picker.dir}" failonerror="true">
+            <arg value="version" />
+            <arg value="${newVersion}" />
+        </exec>
+        <exec executable="${npm}" dir="${solution.moment-adapter.dir}" failonerror="true">
+            <arg value="version" />
+            <arg value="${newVersion}" />
+        </exec>
+    </target>
+
+    <target name="deploy" depends="package">
+        <exec executable="${npm}" dir="${dist.datetime-picker.dir}" failonerror="true">
+            <arg value="publish" />
+        </exec>
+        <exec executable="${npm}" dir="${dist.moment-adapter.dir}" failonerror="true">
+            <arg value="publish" />
+        </exec>
+    </target>
+
+    <target name="package">
+        <exec executable="${npm}" dir="${solution.dir}" failonerror="true">
+            <arg value="run" />
+            <arg value="build" />
+        </exec>
+    </target>
+
+    <target name="test">
+        <exec executable="${npm}" dir="${solution.dir}" failonerror="true">
+            <arg value="test" />
+        </exec>
+    </target>
+</project>
